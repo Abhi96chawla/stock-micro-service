@@ -14,6 +14,8 @@ stages:
 
 # Job to build the Docker image for alert-svc
 build_alert_svc:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:alert-svc -f alert-svc/Dockerfile alert-svc
@@ -22,6 +24,8 @@ build_alert_svc:
 
 # Job to build the Docker image for backend
 build_backend:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:backend -f backend/Dockerfile backend
@@ -30,6 +34,8 @@ build_backend:
 
 # Job to build the Docker image for frontend
 build_frontend:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:frontend -f frontend/Dockerfile frontend
@@ -38,6 +44,8 @@ build_frontend:
 
 # Job to build the Docker image for inventory-mgmt
 build_inventory_mgmt:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:inventory-mgmt -f inventory-mgmt/Dockerfile inventory-mgmt
@@ -46,6 +54,8 @@ build_inventory_mgmt:
 
 # Job to build the Docker image for sharemarket
 build_sharemarket:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:sharemarket -f sharemarket/Dockerfile sharemarket
@@ -54,6 +64,8 @@ build_sharemarket:
 
 # Job to build the Docker image for upload
 build_upload:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:upload -f upload/Dockerfile upload
@@ -62,6 +74,8 @@ build_upload:
 
 # Job to push all images to GitLab registry
 push_images:
+  tags:
+    - Ubuntu-runner-shell-1
   stage: push
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
