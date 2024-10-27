@@ -16,8 +16,5 @@ deploy:
    tags:
      - amazon-linux
    stage: deploy
-   before_script:
-    - sudo usermod -aG docker gitlab-runner
-    - sudo service docker start
    script:
-     - docker-compose up --build
+     - docker run hello-world
