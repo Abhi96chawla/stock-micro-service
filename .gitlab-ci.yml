@@ -65,6 +65,7 @@ push_images:
   stage: push
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker images
     - docker push $IMAGE_IMAGE:alert-svc
     - docker push $IMAGE_IMAGE:backend
     - docker push $IMAGE_IMAGE:frontend
