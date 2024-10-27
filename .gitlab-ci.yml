@@ -1,0 +1,46 @@
+# .gitlab-ci.yml
+
+stages:
+  - build
+  - deploy
+
+variables:
+  IMAGE_REGISTRY: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_DRIVER: overlay2
+
+# Service-specific build jobs
+build_alert_svc:
+  stage: build
+  script:
+    - docker build -t abhishekcha/stock-project-microservice:alert-svc -f /alert-svc/Dockerfile
+    - docker push abhishekcha/stock-project-microservice:alert-svc
+  only:
+    - main
+
+build_backend:
+  stage: build
+  script:
+    - docker build -t abhishekcha/stock-project-microservice:alert-svc:backend -f /backend/Dockerfile
+    - docker push abhishekcha/stock-project-microservice:alert-svc:backend
+  only:
+    - main
+
+build_frontend:
+  stage: build
+  script:
+    - docker build -t abhishekcha/stock-project-microservice:alert-svc:frontend -f /frontend/Dockerfile
+    - docker push $IMAGE_REGISTRY/frontend:$CI_COMMIT_REF_SLUG
+  only:
+    - main
+
+# Define additional jobs for each service as above...
+
+# Deployment job example using docker-compose
+# deploy:
+#   stage: deploy
+#   script:
+#     - docker-compose -f website/docker-compose.yml up -d
+#   only:
+#     - main
+#   environment:
+#     name: production
