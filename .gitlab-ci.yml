@@ -42,7 +42,6 @@ build_frontend:
 
 # Job to build the Docker image for inventory-mgmt
 build_inventory_mgmt:
-
   stage: build-push
   script:
     - docker build -t $IMAGE_IMAGE:inventory-mgmt -f inventory-mgmt/Dockerfile inventory-mgmt
