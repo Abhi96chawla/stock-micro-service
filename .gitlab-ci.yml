@@ -1,15 +1,20 @@
-image: mcr.microsoft.com/powershell
+image: docker:latest
+
+services:
+  - docker:dind
 
 variables:
+  DOCKER_DRIVER: overlay2
   IMAGE_IMAGE: docker.io/abhishekcha/stock-project-microservice
 
 stages:
   - build-push
   - deploy
 
-# Job to push all images to GitLab registry
+# Job to build and push Docker images
 push_images:
   stage: build-push
+  image: mcr.microsoft.com/powershell
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
     - pwsh /push.ps1
