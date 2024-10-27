@@ -8,6 +8,7 @@ variables:
   IMAGE_IMAGE: docker.io/abhishekcha/stock-project-microservice
 
 stages:
+  - build
   - push
   - deploy
 
