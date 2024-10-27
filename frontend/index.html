@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Microservice App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Stocker App</h1>
+        <div id="auth-buttons">
+            <button id="showLogin">Login</button>
+            <button id="showSignup">Sign Up</button>
+        </div>
+        <div id="forms">
+            <form id="loginForm" style="display:none;">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signupForm" style="display:none;">
+                <h2>Sign Up</h2>
+                <input type="text" id="signupFirstName" placeholder="First Name" required>
+                <input type="text" id="signupLastName" placeholder="Last Name" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <textarea id="signupAddress" placeholder="Address" required></textarea>
+                <input type="text" id="signupPostalCode" placeholder="Postal Code" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div id="content"></div>
+        <div id="userInfo" style="display:none;"></div>
+    </div>
+    <script type="module" src="./script.js"></script>
+    <script type="module" src="./env.js"></script>
+</body>
+</html>

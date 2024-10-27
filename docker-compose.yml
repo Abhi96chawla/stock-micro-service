@@ -1,0 +1,76 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    environment:
+      - API_URL=http://localhost:5000
+      - STOCKS_URL=http://localhost:5002/stocks
+      - UPLOAD_URL=http://localhost:5001/upload
+      - SALERT_URL=http://localhost:5003/set-alert
+      - IMGMT_URL=http://localhost:5004
+
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: 34.42.224.12
+      DB_USER: root
+      DB_PASSWORD: Qwerty@123
+      DB_DATABASE: my_database
+
+  upload:
+    build:
+      context: ./upload
+    ports:
+      - "5001:5001"
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/bubbly-mantis.json
+    volumes:
+      - ./upload:/app
+    # Ensure that Nginx serves the upload HTML page
+    command: >
+      sh -c "service nginx start && python3 upload.py"
+
+  sharemarket:
+    build:
+      context: ./sharemarket
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./sharemarket:/app
+    # Ensure that Nginx serves the upload HTML page
+    command: >
+      sh -c "service nginx start && python3 app.py"
+    
+# Uncomment if you need a MySQL service
+# mysql:
+#   image: mysql:5.7
+#   environment:
+#     MYSQL_ROOT_PASSWORD: rootpassword
+#     MYSQL_DATABASE: myapp
+#   volumes:
+#     - mysql_data:/var/lib/mysql
+
+  alert-svc:
+    build: ./alert-svc
+    ports:
+      - "5003:5003"
+
+  inventory-mgmt:
+    build: ./inventory-mgmt
+    ports:
+      - "5004:5004"
+    environment:
+      DB_HOST: 34.42.224.12
+      DB_USER: root
+      DB_PASSWORD: Qwerty@123
+      DB_NAME: my_database
+
+volumes:
+  mysql_data:

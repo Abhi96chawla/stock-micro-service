@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sharemarket
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sharemarket
+  template:
+    metadata:
+      labels:
+        app: sharemarket
+    spec:
+      containers:
+      - name: sharemarket
+        image: abhishekcha/stock-project-microservice:sharemarket
+        ports:
+        - containerPort: 5002
+        volumeMounts:
+        - mountPath: /app
+          name: sharemarket-volume
+      volumes:
+      - name: sharemarket-volume
+        hostPath:
+          path: ./sharemaker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sharemarket
+spec:
+  ports:
+  - port: 5002
+    targetPort: 5002
+  selector:
+    app: sharemarket

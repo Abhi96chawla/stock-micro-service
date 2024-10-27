@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-mgmt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-mgmt
+  template:
+    metadata:
+      labels:
+        app: inventory-mgmt
+    spec:
+      containers:
+      - name: inventory-mgmt
+        image: abhishekcha/stock-project-microservice:inventory-mgmt
+        ports:
+        - containerPort: 5004
+        env:
+        - name: DB_HOST
+          value: "34.42.224.12"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "Qwerty@123"
+        - name: DB_NAME
+          value: "my_database"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-mgmt
+spec:
+  ports:
+  - port: 5004
+    targetPort: 5004
+  selector:
+    app: inventory-mgmt

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upload
+  template:
+    metadata:
+      labels:
+        app: upload
+    spec:
+      containers:
+      - name: upload
+        image: your-upload-image:latest # Replace with your upload image name
+        ports:
+        - containerPort: 5001
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /app/bubbly-mantis.json
+        volumeMounts:
+        - mountPath: /app
+          name: upload-volume
+      volumes:
+      - name: upload-volume
+        hostPath:
+          path: ./upload
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: upload
+spec:
+  ports:
+  - port: 5001
+    targetPort: 5001
+  selector:
+    app: upload
