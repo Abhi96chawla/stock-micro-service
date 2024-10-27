@@ -7,7 +7,7 @@ variables:
   IMAGE_IMAGE: abhishekcha/stock-project-microservice
 
 stages:
-  - build
+  - build-push
   - push
 
 # Job to build the Docker image for alert-svc
@@ -25,6 +25,8 @@ build_backend:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:backend -f backend/Dockerfile backend
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE:backend
   only:
     - main
 
@@ -33,6 +35,8 @@ build_frontend:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:frontend -f frontend/Dockerfile frontend
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE:frontend
   only:
     - main
 
@@ -42,6 +46,8 @@ build_inventory_mgmt:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:inventory-mgmt -f inventory-mgmt/Dockerfile inventory-mgmt
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE:inventory-mgmt
   only:
     - main
 
@@ -50,6 +56,8 @@ build_sharemarket:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:sharemarket -f sharemarket/Dockerfile sharemarket
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE:sharemarket
   only:
     - main
 
@@ -58,20 +66,9 @@ build_upload:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:upload -f upload/Dockerfile upload
-  only:
-    - main
-
-# Job to push all images to GitLab registry
-push_images:
-  stage: push
-  script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
-    - docker images
-#    - docker push $IMAGE_IMAGE:alert-svc
-    - docker push $IMAGE_IMAGE:backend
-    - docker push $IMAGE_IMAGE:frontend
-    - docker push $IMAGE_IMAGE:inventory-mgmt
-    - docker push $IMAGE_IMAGE:sharemarket
     - docker push $IMAGE_IMAGE:upload
   only:
     - main
+
+
