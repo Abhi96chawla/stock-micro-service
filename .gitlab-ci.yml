@@ -70,11 +70,11 @@ build_upload:
   only:
     - main
 
-# deploy:
-#   tags:
-#     - amazon-linux
+deploy:
+   tags:
+     - amazon-linux
 # #    - Ubuntu-runner-shell-1
-#   stage: deploy
-#   script:
-#     docker-compose up --build
+   stage: deploy
+   script:
+     docker-compose up --build
 
