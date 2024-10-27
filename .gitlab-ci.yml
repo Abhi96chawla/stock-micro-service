@@ -4,13 +4,11 @@ services:
   - docker:dind
 
 variables:
-  DOCKER_DRIVER: overlay2
   IMAGE_IMAGE: abhishekcha/stock-project-microservice
 
 stages:
   - build
   - push
-  - deploy
 
 # Job to build the Docker image for alert-svc
 build_alert_svc:
@@ -67,7 +65,7 @@ push_images:
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
     - docker images
-    - docker push $IMAGE_IMAGE:alert-svc
+#    - docker push $IMAGE_IMAGE:alert-svc
     - docker push $IMAGE_IMAGE:backend
     - docker push $IMAGE_IMAGE:frontend
     - docker push $IMAGE_IMAGE:inventory-mgmt
