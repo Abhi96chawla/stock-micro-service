@@ -14,7 +14,7 @@ stages:
 # Job to build and push Docker images
 push_images:
   stage: build-push
-  image: mcr.microsoft.com/powershell
+  image: docker:latest
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
     - pwsh /push.ps1
