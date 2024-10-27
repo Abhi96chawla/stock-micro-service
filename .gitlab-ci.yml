@@ -13,7 +13,7 @@ stages:
 
 # Job to push all images to GitLab registry
 push_images:
-  stage: push
+  stage: buid-push
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
     - pwsh /push.ps1
