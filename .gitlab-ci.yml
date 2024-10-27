@@ -73,7 +73,8 @@ build_upload:
 
 deploy:
   tags:
-    - Ubuntu-runner-shell-1
+    - amazon-linux
+#    - Ubuntu-runner-shell-1
   stage: deploy
   script:
     docker-compose up --build
