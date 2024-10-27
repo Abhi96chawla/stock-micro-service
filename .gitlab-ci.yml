@@ -70,8 +70,8 @@ stages:
 #     - main
 
 deploy:
-   tags:
-     - amazon-linux  # Replace with the actual tag of the runner for deployment
+#   tags:
+#     - amazon-linux  # Replace with the actual tag of the runner for deployment
    stage: deploy
    script:
      - docker-compose up --build
