@@ -5,7 +5,6 @@ services:
 
 variables:
   IMAGE_IMAGE: abhishekcha/stock-project-microservice
-  # Add these important Docker TLS variables
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2376
   DOCKER_DRIVER: overlay2
@@ -17,6 +16,9 @@ deploy:
    tags:
      - amazon-linux
    stage: deploy
+   before_script:
+    - sudo usermod -aG docker gitlab-runner
+    - sudo service docker start
+    - sudo yum install -y docker-compose
    script:
-     - apk add --no-cache docker-compose
      - docker-compose up --build
