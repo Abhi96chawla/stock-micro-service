@@ -19,6 +19,5 @@ deploy:
    before_script:
     - sudo usermod -aG docker gitlab-runner
     - sudo service docker start
-    - sudo yum install -y docker-compose
    script:
      - docker-compose up --build
