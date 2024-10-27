@@ -8,7 +8,7 @@ variables:
 
 stages:
   - build-push
-  - push
+  - deploy
 
 # Job to build the Docker image for alert-svc
 build_alert_svc:
@@ -71,4 +71,10 @@ build_upload:
   only:
     - main
 
+deploy:
+  tags:
+    - Ubuntu-runner-shell-1
+  stage: deploy
+  script:
+    docker-compose up --build
 
