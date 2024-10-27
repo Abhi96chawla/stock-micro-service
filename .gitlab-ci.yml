@@ -6,6 +6,10 @@ services:
 variables:
   IMAGE_IMAGE: abhishekcha/stock-project-microservice
 
+before_script:
+  - sudo usermod -aG docker gitlab-runner
+  - sudo service docker start
+
 stages:
   - deploy
 
