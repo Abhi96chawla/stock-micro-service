@@ -15,6 +15,8 @@ build_alert_svc:
   stage: build
   script:
     - docker build -t $IMAGE_IMAGE:alert-svc -f alert-svc/Dockerfile alert-svc
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE:alert-svc
   only:
     - main
 
