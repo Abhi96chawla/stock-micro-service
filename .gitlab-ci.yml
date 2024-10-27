@@ -1,46 +1,74 @@
-# .gitlab-ci.yml
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  IMAGE_IMAGE: abhishekcha/stock-project-microservice
 
 stages:
   - build
-  - deploy
+  - push
 
-variables:
-  IMAGE_REGISTRY: registry.gitlab.com/$CI_PROJECT_PATH
-  DOCKER_DRIVER: overlay2
-
-# Service-specific build jobs
+# Job to build the Docker image for alert-svc
 build_alert_svc:
   stage: build
   script:
-    - docker build -t abhishekcha/stock-project-microservice:alert-svc -f /alert-svc/Dockerfile
-    - docker push abhishekcha/stock-project-microservice:alert-svc
+    - docker build -t $IMAGE_IMAGE/alert-svc -f alert-svc/Dockerfile alert-svc
   only:
     - main
 
+# Job to build the Docker image for backend
 build_backend:
   stage: build
   script:
-    - docker build -t abhishekcha/stock-project-microservice:alert-svc:backend -f /backend/Dockerfile
-    - docker push abhishekcha/stock-project-microservice:alert-svc:backend
+    - docker build -t $IMAGE_IMAGE/backend -f backend/Dockerfile backend
   only:
     - main
 
+# Job to build the Docker image for frontend
 build_frontend:
   stage: build
   script:
-    - docker build -t abhishekcha/stock-project-microservice:alert-svc:frontend -f /frontend/Dockerfile
-    - docker push $IMAGE_REGISTRY/frontend:$CI_COMMIT_REF_SLUG
+    - docker build -t $IMAGE_IMAGE/frontend -f frontend/Dockerfile frontend
   only:
     - main
 
-# Define additional jobs for each service as above...
+# Job to build the Docker image for inventory-mgmt
+build_inventory_mgmt:
+  stage: build
+  script:
+    - docker build -t $IMAGE_IMAGE/inventory-mgmt -f inventory-mgmt/Dockerfile inventory-mgmt
+  only:
+    - main
 
-# Deployment job example using docker-compose
-# deploy:
-#   stage: deploy
-#   script:
-#     - docker-compose -f website/docker-compose.yml up -d
-#   only:
-#     - main
-#   environment:
-#     name: production
+# Job to build the Docker image for sharemarket
+build_sharemarket:
+  stage: build
+  script:
+    - docker build -t $IMAGE_IMAGE/sharemarket -f sharemarket/Dockerfile sharemarket
+  only:
+    - main
+
+# Job to build the Docker image for upload
+build_upload:
+  stage: build
+  script:
+    - docker build -t $IMAGE_IMAGE/upload -f upload/Dockerfile upload
+  only:
+    - main
+
+# Job to push all images to GitLab registry
+push_images:
+  stage: push
+  script:
+    - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
+    - docker push $IMAGE_IMAGE/alert-svc
+    - docker push $IMAGE_IMAGE/backend
+    - docker push $IMAGE_IMAGE/frontend
+    - docker push $IMAGE_IMAGE/inventory-mgmt
+    - docker push $IMAGE_IMAGE/sharemarket
+    - docker push $IMAGE_IMAGE/upload
+  only:
+    - main
