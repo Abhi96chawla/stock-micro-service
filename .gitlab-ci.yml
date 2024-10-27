@@ -8,69 +8,14 @@ variables:
   IMAGE_IMAGE: docker.io/abhishekcha/stock-project-microservice
 
 stages:
-  - build
-  - push
+  - buid-push
   - deploy
-
-# Job to build the Docker image for alert-svc
-build_alert_svc:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:alert-svc -f alert-svc/Dockerfile alert-svc
-  only:
-    - main
-
-# Job to build the Docker image for backend
-build_backend:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:backend -f backend/Dockerfile backend
-  only:
-    - main
-
-# Job to build the Docker image for frontend
-build_frontend:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:frontend -f frontend/Dockerfile frontend
-  only:
-    - main
-
-# Job to build the Docker image for inventory-mgmt
-build_inventory_mgmt:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:inventory-mgmt -f inventory-mgmt/Dockerfile inventory-mgmt
-  only:
-    - main
-
-# Job to build the Docker image for sharemarket
-build_sharemarket:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:sharemarket -f sharemarket/Dockerfile sharemarket
-  only:
-    - main
-
-# Job to build the Docker image for upload
-build_upload:
-  stage: build
-  script:
-    - docker build -t $IMAGE_IMAGE:upload -f upload/Dockerfile upload
-  only:
-    - main
 
 # Job to push all images to GitLab registry
 push_images:
   stage: push
   script:
     - docker login -u "abhishekcha" -p "$DOCKERHUB_TOKEN"
-    - docker images
-    - docker push $IMAGE_IMAGE:alert-svc
-    - docker push $IMAGE_IMAGE:backend
-    - docker push $IMAGE_IMAGE:frontend
-    - docker push $IMAGE_IMAGE:inventory-mgmt
-    - docker push $IMAGE_IMAGE:sharemarket
-    - docker push $IMAGE_IMAGE:upload
+    - pwsh /push.ps1
   only:
     - main
