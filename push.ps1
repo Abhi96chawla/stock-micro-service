@@ -1,10 +1,10 @@
 # Check if the Docker Desktop process is running
-$dockerProcess = Get-Process -Name "Docker Desktop" -ErrorAction SilentlyContinue
+#$dockerProcess = Get-Process -Name "Docker Desktop" -ErrorAction SilentlyContinue
 
 # Check if the Docker daemon is responsive
-$dockerStatus = docker info 2>&1
+#$dockerStatus = docker info 2>&1
 
-if ($dockerProcess -and $dockerStatus -notmatch "Is the docker daemon running?") {
+#if ($dockerProcess -and $dockerStatus -notmatch "Is the docker daemon running?") {
     Write-Host "Docker Desktop is running."
 
     Set-Location "C:\Users\chawl\OneDrive\Documents\practice\kubernetes\website\frontend\"
@@ -31,7 +31,3 @@ if ($dockerProcess -and $dockerStatus -notmatch "Is the docker daemon running?")
     docker build -t abhishekcha/stock-project-microservice:sharemarket .
 
     docker push abhishekcha/stock-project-microservice:sharemarket
-
-} else {
-    Write-Host "Docker Desktop is NOT running."
-}

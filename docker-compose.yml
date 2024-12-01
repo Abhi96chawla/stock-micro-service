@@ -1,7 +1,8 @@
-version: '3'
+#version: '3'
 services:
   frontend:
     build: ./frontend
+    image: abhishekcha/stock-project-microservice:frontend  # Add image here
     ports:
       - "80:80"
     environment:
@@ -10,12 +11,12 @@ services:
       - UPLOAD_URL=http://localhost:5001/upload
       - SALERT_URL=http://localhost:5003/set-alert
       - IMGMT_URL=http://localhost:5004
-
     depends_on:
       - backend
 
   backend:
     build: ./backend
+    image: abhishekcha/stock-project-microservice:backend  # Add image here
     ports:
       - "5000:5000"
     environment:
@@ -27,43 +28,36 @@ services:
   upload:
     build:
       context: ./upload
+    image: abhishekcha/stock-project-microservice:upload  # Add image here
     ports:
       - "5001:5001"
     environment:
       GOOGLE_APPLICATION_CREDENTIALS: /app/bubbly-mantis.json
     volumes:
       - ./upload:/app
-    # Ensure that Nginx serves the upload HTML page
     command: >
       sh -c "service nginx start && python3 upload.py"
 
   sharemarket:
     build:
       context: ./sharemarket
+    image: abhishekcha/stock-project-microservice:sharemarket  # Add image here
     ports:
       - "5002:5002"
     volumes:
       - ./sharemarket:/app
-    # Ensure that Nginx serves the upload HTML page
     command: >
       sh -c "service nginx start && python3 app.py"
-    
-# Uncomment if you need a MySQL service
-# mysql:
-#   image: mysql:5.7
-#   environment:
-#     MYSQL_ROOT_PASSWORD: rootpassword
-#     MYSQL_DATABASE: myapp
-#   volumes:
-#     - mysql_data:/var/lib/mysql
 
   alert-svc:
     build: ./alert-svc
+    image: abhishekcha/stock-project-microservice:alert-svc  # Add image here
     ports:
       - "5003:5003"
 
   inventory-mgmt:
     build: ./inventory-mgmt
+    image: abhishekcha/stock-project-microservice:inventory-mgmt  # Add image here
     ports:
       - "5004:5004"
     environment:
