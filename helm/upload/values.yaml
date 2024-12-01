@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: abhishekcha/stock-project-microservice
+  tag: upload
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 5001
+
+app:
+  name: upload
+  containerPort: 5001
+ingress:
+  enabled: false

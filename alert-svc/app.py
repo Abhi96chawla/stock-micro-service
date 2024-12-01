@@ -1,20 +1,31 @@
 import os
+import json
 import time
 import threading
-import json
 import yfinance as yf
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template
+from google.cloud import pubsub_v1
+
+# Set the path to your Google Cloud service account key file
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"bubbly-mantis.json"
 
 app = Flask(__name__)
 
-# Store alerts in memory (use a database in production)
-alerts = []
+# Initialize Google Cloud Pub/Sub variables
+project_id = "python-project-cluster"
+topic_id = "my-topic"
+subscription_id = "my-sub"
 
-# Route to render the stock alert form and handle alert submissions
+# Initialize Pub/Sub publisher and subscriber clients
+publisher = pubsub_v1.PublisherClient()
+subscriber = pubsub_v1.SubscriberClient()
+topic_path = publisher.topic_path(project_id, topic_id)
+subscription_path = subscriber.subscription_path(project_id, subscription_id)
+
+# Route to render the form and handle alert submissions
 @app.route('/set-alert', methods=['GET', 'POST'])
 def stock_alert():
     if request.method == 'POST':
-        # Extract form data from JSON (coming from the frontend)
         data = request.json
         stock_symbol = data.get('stock')
         price_threshold = data.get('threshold')
@@ -29,50 +40,74 @@ def stock_alert():
         except ValueError:
             return jsonify({'message': 'Invalid price threshold!'}), 400
 
-        # Add the alert to the list
-        alerts.append({
+        # Publish alert data to Pub/Sub topic
+        alert_data = {
             'email': email,
-            'stock': stock_symbol.upper(),  # Convert stock symbols to uppercase
+            'stock': stock_symbol.upper(),
             'threshold': price_threshold
-        })
+        }
+
+        # Log the alert data being published
+        print(f"Publishing message: {alert_data}")
+
+        # Publish the alert data as a JSON string to the Pub/Sub topic
+        future = publisher.publish(topic_path, json.dumps(alert_data).encode("utf-8"))
+        future.result()  # Wait for publishing to complete
 
         return jsonify({'message': f'Stock alert for {stock_symbol} set at price {price_threshold} successfully!'})
 
-    # Render the stock alert form
+    # Render the `salert.html` template when the request is a GET
     return render_template('salert.html')
 
-# Function to check stock prices and send notifications
-def check_stock_prices():
-    while True:
-        for alert in alerts:
-            stock_symbol = alert['stock']
-            threshold = alert['threshold']
-            email = alert['email']
+# Function to process alerts from Pub/Sub subscription
+def process_alert(message):
+    # Print the raw message data to check if it's empty or not valid
+    print(f"Received message data: {message.data}")
 
-            try:
-                # Fetch the current stock price using yfinance
-                stock_data = yf.Ticker(stock_symbol)
-                stock_price = stock_data.history(period="1d")['Close'][0]
+    try:
+        # Try decoding the message data
+        alert = json.loads(message.data)
+        stock_symbol = alert['stock']
+        threshold = alert['threshold']
+        email = alert['email']
 
-                # Check if the current price crosses the threshold
-                if stock_price >= threshold:
-                    send_notification(email, stock_symbol, stock_price)
-            except Exception as e:
-                print(f"Error checking stock price for {stock_symbol}: {str(e)}")
+        try:
+            # Fetch current stock price
+            stock_data = yf.Ticker(stock_symbol)
+            stock_price = stock_data.history(period="1d")['Close'][0]
 
-        time.sleep(300)  # Check every 5 minutes
+            # Log stock data and check if current price meets or exceeds threshold
+            print(f"Stock: {stock_symbol}, Price: {stock_price}, Threshold: {threshold}")
+
+            if stock_price >= threshold:
+                send_notification(email, stock_symbol, stock_price)
+        except Exception as e:
+            print(f"Error processing alert for {stock_symbol}: {str(e)}")
+    except json.decoder.JSONDecodeError as e:
+        print(f"Failed to decode message: {message.data} with error: {str(e)}")
+
+    message.ack()  # Acknowledge the message after processing
 
 # Dummy function to simulate sending a notification
 def send_notification(email, stock_symbol, stock_price):
     print(f"Notification sent to {email}: {stock_symbol} has reached ${stock_price}")
 
-# Start background thread for stock price monitoring
-def start_monitoring():
-    thread = threading.Thread(target=check_stock_prices)
+# Start Pub/Sub subscription listener in a separate thread
+def start_pubsub_subscriber():
+    streaming_pull_future = subscriber.subscribe(subscription_path, callback=process_alert)
+    print("Listening for messages on {}...".format(subscription_path))
+    try:
+        streaming_pull_future.result()
+    except Exception as e:
+        streaming_pull_future.cancel()
+        print(f"Listening for messages on {subscription_path} threw an exception: {e}")
+
+# Start the Flask app and Pub/Sub subscriber thread
+if __name__ == '__main__':
+    # Start the subscriber thread to listen to incoming messages
+    thread = threading.Thread(target=start_pubsub_subscriber)
     thread.daemon = True
     thread.start()
 
-# Start the Flask app and monitoring thread
-if __name__ == '__main__':
-    start_monitoring()
+    # Run Flask app
     app.run(host='0.0.0.0', port=5003, debug=True)

@@ -1,0 +1,15 @@
+frontend:
+  image:
+    repository: abhishekcha/stock-project-microservice
+    tag: frontend  # You can modify this to use a version tag instead (e.g., "v1.0.0")
+  
+  apiUrl: "http://34.69.210.26:5000"
+  stocksUrl: "http://34.41.174.231:5002/stocks"
+  uploadUrl: "http://upload.default.svc.cluster.local:5001/upload"
+  salertUrl: "http://34.171.199.31:5003/set-alert"
+  imgmtUrl: "http://35.225.225.41:5004"
+
+  service:
+    type: LoadBalancer  # You can change this to NodePort or ClusterIP based on your requirement
+ingress:
+  enabled: false

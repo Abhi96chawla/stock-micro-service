@@ -1,0 +1,17 @@
+backend:
+  replicas: 1
+  image:
+    repository: abhishekcha/stock-project-microservice
+    tag: backend  # You can change this to specify a versioned tag if needed
+
+  db:
+    host: "34.42.224.12"
+    user: "root"
+    password: "Qwerty@123"
+    database: "my_database"
+
+  service:
+    type: LoadBalancer  # Can also be ClusterIP or NodePort
+
+ingress:
+  enabled: false

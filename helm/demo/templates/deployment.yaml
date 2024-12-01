@@ -1,9 +1,4 @@
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: alert-svc
-#   labels:
-#     name: alert-svc
+
 
 apiVersion: apps/v1
 kind: Deployment

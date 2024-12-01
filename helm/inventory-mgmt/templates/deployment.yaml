@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-inventory-mgmt
+spec:
+  replicas: {{ .Values.inventoryMgmt.replicas }}
+  selector:
+    matchLabels:
+      app: inventory-mgmt
+  template:
+    metadata:
+      labels:
+        app: inventory-mgmt
+    spec:
+      containers:
+        - name: inventory-mgmt
+          image: "{{ .Values.inventoryMgmt.image.repository }}:{{ .Values.inventoryMgmt.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.inventoryMgmt.service.targetPort }}
+          env:
+            - name: DB_HOST
+              value: "{{ .Values.inventoryMgmt.db.host }}"
+            - name: DB_USER
+              value: "{{ .Values.inventoryMgmt.db.user }}"
+            - name: DB_PASSWORD
+              value: "{{ .Values.inventoryMgmt.db.password }}"
+            - name: DB_NAME
+              value: "{{ .Values.inventoryMgmt.db.name }}"

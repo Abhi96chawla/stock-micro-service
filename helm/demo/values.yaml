@@ -1,0 +1,16 @@
+# Configuration values for alert-svc deployment
+alertsvc:
+  replicas: 1  # Number of replicas for the alert-svc deployment
+
+  # Image details for the alert-svc container
+  image:
+    repository: abhishekcha/stock-project-microservice  # Docker image repository
+    tag: alert-svc  # Docker image tag (version)
+
+  # Service configuration for alert-svc
+  service:
+    type: LoadBalancer  # Can be LoadBalancer, ClusterIP, or NodePort
+    port: 5003  # External port for the service
+    targetPort: 5003  # Container port to forward traffic to
+ingress:
+  enabled: false

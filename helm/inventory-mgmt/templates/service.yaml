@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-inventory-mgmt
+spec:
+  type: {{ .Values.inventoryMgmt.service.type }}
+  ports:
+    - port: {{ .Values.inventoryMgmt.service.port }}
+      targetPort: {{ .Values.inventoryMgmt.service.targetPort }}
+  selector:
+    app: inventory-mgmt

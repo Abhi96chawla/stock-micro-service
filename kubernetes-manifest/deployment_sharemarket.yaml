@@ -1,7 +1,19 @@
+# Uncomment the Namespace definition if you want to create/use a specific namespace
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: sharemarket
+#   labels:
+#     name: sharemarket
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sharemarket
+  # Uncomment the line below if you're using a specific namespace
+  # namespace: sharemarket
 spec:
   replicas: 1
   selector:
@@ -17,20 +29,32 @@ spec:
         image: abhishekcha/stock-project-microservice:sharemarket
         ports:
         - containerPort: 5002
-        volumeMounts:
-        - mountPath: /app
-          name: sharemarket-volume
-      volumes:
-      - name: sharemarket-volume
-        hostPath:
-          path: ./sharemaker
+        # volumeMounts:
+        # - mountPath: /app
+        #   name: sharemarket-volume
+        resources:  # Define resource requests and limits here
+          requests:
+            cpu: "250m"   # 250 millicores (0.25 CPU)
+            memory: "128Mi" # 128 MiB
+          limits:
+            cpu: "500m"   # 500 millicores (0.5 CPU)
+            memory: "256Mi" # 256 MiB
+      # volumes:
+      # - name: sharemarket-volume
+      #   hostPath:
+      #     path: ./sharemaker  # Adjust the path to the absolute path on the host system
+      #     type: DirectoryOrCreate  # Ensures the directory is created if it doesn't exist
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
   name: sharemarket
+  # Uncomment the line below if you're using a specific namespace
+  # namespace: sharemarket
 spec:
+  type: LoadBalancer
   ports:
   - port: 5002
     targetPort: 5002

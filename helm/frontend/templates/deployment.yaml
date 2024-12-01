@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_URL
+              value: {{ .Values.frontend.apiUrl }}
+            - name: STOCKS_URL
+              value: {{ .Values.frontend.stocksUrl }}
+            - name: UPLOAD_URL
+              value: {{ .Values.frontend.uploadUrl }}
+            - name: SALERT_URL
+              value: {{ .Values.frontend.salertUrl }}
+            - name: IMGMT_URL
+              value: {{ .Values.frontend.imgmtUrl }}

@@ -1,0 +1,23 @@
+# Configuration values for inventory-mgmt deployment
+inventoryMgmt:
+  replicas: 1  # Number of replicas for the deployment
+
+  # Image configuration for the inventory-mgmt container
+  image:
+    repository: abhishekcha/stock-project-microservice  # Docker image repository
+    tag: inventory-mgmt  # Docker image tag
+
+  # Database environment variables
+  db:
+    host: "34.42.224.12"
+    user: "root"
+    password: "Qwerty@123"
+    name: "my_database"
+
+  # Service configuration
+  service:
+    type: LoadBalancer  # Can be LoadBalancer, ClusterIP, or NodePort
+    port: 5004  # External port for the service
+    targetPort: 5004  # Container port to forward traffic to
+ingress:
+  enabled: false

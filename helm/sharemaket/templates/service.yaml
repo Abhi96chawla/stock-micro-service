@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: {{ .Values.sharemarket.service.type }}
+  ports:
+  - port: {{ .Values.sharemarket.service.port }}
+    targetPort: {{ .Values.sharemarket.service.targetPort }}
+  selector:
+    app: {{ .Release.Name }}

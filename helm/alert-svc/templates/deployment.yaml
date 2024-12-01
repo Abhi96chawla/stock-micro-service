@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-alert-svc
+spec:
+  replicas: {{ .Values.alertsvc.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-alert-svc
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-alert-svc
+    spec:
+      containers:
+        - name: alert-svc
+          image: "{{ .Values.alertsvc.image.repository }}:{{ .Values.alertsvc.image.tag }}"
+          ports:
+            - containerPort: 5003

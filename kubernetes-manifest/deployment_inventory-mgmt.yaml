@@ -1,7 +1,15 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: inventory-mgmt
+#   labels:
+#     name: inventory-mgmt
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inventory-mgmt
+#  namespace: inventory-mgmt
 spec:
   replicas: 1
   selector:
@@ -17,6 +25,13 @@ spec:
         image: abhishekcha/stock-project-microservice:inventory-mgmt
         ports:
         - containerPort: 5004
+        resources:
+          requests:
+            cpu: "250m"   # 250 millicores (0.25 CPU)
+            memory: "128Mi" # 128 MiB
+          limits:
+            cpu: "500m"   # 500 millicores (0.5 CPU)
+            memory: "256Mi" # 256 MiB
         env:
         - name: DB_HOST
           value: "34.42.224.12"
@@ -26,13 +41,14 @@ spec:
           value: "Qwerty@123"
         - name: DB_NAME
           value: "my_database"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: inventory-mgmt
+#  namespace: inventory-mgmt
 spec:
+  type: LoadBalancer
   ports:
   - port: 5004
     targetPort: 5004

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+#  namespace: frontend
 spec:
   replicas: 1
   selector:
@@ -17,23 +18,41 @@ spec:
         image: abhishekcha/stock-project-microservice:frontend
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            cpu: "250m"   # 250 millicores (0.25 CPU)
+            memory: "128Mi" # 128 MiB
+          limits:
+            cpu: "500m"   # 500 millicores (0.5 CPU)
+            memory: "256Mi" # 256 MiB
         env:
+        # - name: API_URL
+        #   value: "backend.backend.svc.cluster.local:5000"
+        # - name: STOCKS_URL
+        #   value: "sharemarket.sharemarket.svc.cluster.local:5002/stocks"
+        # - name: UPLOAD_URL
+        #   value: "upload.upload.svc.cluster.local:5001/upload"
+        # - name: SALERT_URL
+        #   value: alert-svc.alert-svc.svc.cluster.local:5003/set-alert
+        # - name: IMGMT_URL
+        #   value: "inventory-mgmt.inventory-mgmt.svc.cluster.local:5004"
         - name: API_URL
-          value: http://backend:5000
+          value: 34.57.166.81:5000
         - name: STOCKS_URL
-          value: http://sharemarket:5002/stocks
+          value: 35.232.145.168:5002/stocks
         - name: UPLOAD_URL
-          value: http://upload:5001/upload
+          value: 34.173.21.63:5001/upload
         - name: SALERT_URL
-          value: http://alert-svc:5003/set-alert
+          value: 35.184.133.17:5003/set-alert
         - name: IMGMT_URL
-          value: http://inventory-mgmt:5004
+          value: 34.122.169.253:5004
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+#  namespace: frontend
 spec:
   type: LoadBalancer # Change to ClusterIP or NodePort as needed
   ports:

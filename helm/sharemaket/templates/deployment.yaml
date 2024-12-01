@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.sharemarket.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: sharemarket
+        image: "{{ .Values.sharemarket.image.repository }}:{{ .Values.sharemarket.image.tag }}"
+        ports:
+        - containerPort: 5002
+        volumeMounts:
+        - mountPath: /app
+          name: sharemarket-volume
+      volumes:
+      - name: sharemarket-volume
+        persistentVolumeClaim:
+          claimName: sharemarket-pvc
