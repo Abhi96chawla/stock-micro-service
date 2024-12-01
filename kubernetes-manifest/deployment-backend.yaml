@@ -35,13 +35,13 @@ spec:
             memory: "256Mi"
         env:
         - name: DB_HOST
-          value: "34.42.224.12"
+          value: "****"
         - name: DB_USER
-          value: "root"
+          value: "****"
         - name: DB_PASSWORD
-          value: "Qwerty@123"
+          value: "****"
         - name: DB_DATABASE
-          value: "my_database"
+          value: "****"
 
 ---
 apiVersion: v1
