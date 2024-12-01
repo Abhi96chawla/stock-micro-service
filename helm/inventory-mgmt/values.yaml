@@ -9,10 +9,10 @@ inventoryMgmt:
 
   # Database environment variables
   db:
-    host: "34.42.224.12"
-    user: "root"
-    password: "Qwerty@123"
-    name: "my_database"
+    host: "****"
+    user: "****"
+    password: "****"
+    name: "****"
 
   # Service configuration
   service:
